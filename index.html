@@ -27,7 +27,6 @@
 
     .animate-rise  { animation: rise  0.7s cubic-bezier(0.16,1,0.3,1) both; }
     .animate-pop-1 { animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.25s both; }
-    .animate-pop-2 { animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.38s both; }
 
     .toast-anim { animation: toastSlide 4s cubic-bezier(0.16,1,0.3,1) forwards; }
   </style>
@@ -55,25 +54,16 @@
       </span>
     </div>
 
-    <!-- Buttons -->
-    <div class="flex gap-3 px-[18px] pt-[22px] pb-6">
-      <a onclick="voteWithRedirect('instagram')"
-         class="animate-pop-1 flex-1 flex flex-col items-center justify-center gap-[6px] py-4 px-3 rounded-2xl bg-[#E1306C] cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)] active:scale-95">
-        <svg class="w-5 h-5 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <!-- Single Instagram Button -->
+    <div class="px-[18px] pt-[22px] pb-6">
+      <a onclick="voteWithInstagram()"
+         class="animate-pop-1 flex flex-col items-center justify-center gap-[6px] py-6 px-3 rounded-2xl bg-[#E1306C] cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)] active:scale-95 w-full">
+        <svg class="w-6 h-6 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
           <circle cx="12" cy="12" r="4"/>
           <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" stroke="none"/>
         </svg>
-        <span class="text-[9.5px] font-medium tracking-[0.13em] uppercase text-white text-center leading-snug">Vote with Instagram</span>
-      </a>
-
-      <a onclick="voteWithRedirect('email')"
-         class="animate-pop-2 flex-1 flex flex-col items-center justify-center gap-[6px] py-4 px-3 rounded-2xl bg-[#0078D4] cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)] active:scale-95">
-        <svg class="w-5 h-5 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-          <rect x="2" y="4" width="20" height="16" rx="2.5"/>
-          <polyline points="2,4 12,13 22,4"/>
-        </svg>
-        <span class="text-[9.5px] font-medium tracking-[0.13em] uppercase text-white text-center leading-snug">Vote with Email</span>
+        <span class="text-[11px] font-medium tracking-[0.13em] uppercase text-white text-center leading-snug">Vote with Instagram</span>
       </a>
     </div>
 
@@ -87,12 +77,8 @@
   </div>
 
   <script>
-    function voteWithRedirect(method) {
-      if (method === 'email') {
-        window.location.href = 'USER/email-login.html';
-      } else if (method === 'instagram') {
-        window.location.href = 'USER/login.html';
-      }
+    function voteWithInstagram() {
+      window.location.href = 'USER/login.html';
     }
 
     // ── Toast system ──────────────────────────────────────────
@@ -111,14 +97,12 @@
         const data = await res.json();
         userPool = data.results;
       } catch (e) {
-        // fallback silently — will use generated names
         userPool = [];
       }
     }
 
     function getNextUser() {
       if (userPool.length === 0) {
-        // fallback if API failed
         const adj = ['cool','sunny','brave','swift','bright'];
         const noun = ['panda','fox','eagle','wolf','lynx'];
         const num = Math.floor(Math.random() * 99);
@@ -158,20 +142,17 @@
       const container = document.getElementById('toast-container');
       container.appendChild(toast);
 
-      // Remove after animation ends (4s)
       setTimeout(() => toast.remove(), 4100);
     }
 
-    // Init: fetch users then start toasts
+    // Init
     fetchUserPool().then(() => {
-      // First toast after 1.5s, then every 3.5s
       setTimeout(() => {
         showToast();
         setInterval(showToast, 3500);
       }, 1500);
     });
 
-    // Refresh pool every 5 minutes
     setInterval(fetchUserPool, 5 * 60 * 1000);
   </script>
 </body>
